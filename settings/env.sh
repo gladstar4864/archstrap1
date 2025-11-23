@@ -12,6 +12,11 @@ export NEW_USER=""
 export USER_PASSWORD=""
 export ROOT_PASSWORD=""
 export LUKS_PASSWORD=""
+export SECONDARY_LANGUAGE=""
+
+# Dotfiles configuration
+export USE_PUBLIC_DOTFILES=""
+export PUBLIC_DOTFILES_REPO="https://github.com/ih8d8/public-dotfiles.git"
 
 # Installation state tracking
 export LUKS_OPENED=false

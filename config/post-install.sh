@@ -148,7 +148,7 @@ configure_system_post_install() {
     local init_user_script="${POST_INSTALL_SCRIPT_DIR}/dotfiles/extra/init-scripts/init-user.sh"
     if [[ -f "$init_user_script" ]]; then
         log "Found user initialization script, executing..."
-        if ! bash "${init_user_script}" "/mnt" "${NEW_USER}"; then
+        if ! bash "${init_user_script}" "/mnt" "${NEW_USER}" "${SECONDARY_LANGUAGE}"; then
             fatal_error "Failed to execute user initialization script"
         fi
         log "User initialization script executed successfully"

@@ -9,6 +9,12 @@ if [[ -z "${LOG_FILE:-}" ]]; then
     source "${INPUTS_SCRIPT_DIR}/logging.sh"
 fi
 
+# Source private environment variables if available
+# This allows pre-setting HOSTNAME, NEW_USER, SECONDARY_LANGUAGE, etc.
+if [[ -f "${INPUTS_SCRIPT_DIR}/../settings/env-private.sh" ]]; then
+    source "${INPUTS_SCRIPT_DIR}/../settings/env-private.sh"
+fi
+
 # Collect all user inputs at the beginning
 collect_user_inputs() {
     echo -e "${BOLD}${CYAN}╔═══════════════════════════════════════════════════════════════╗${NC}"
@@ -18,29 +24,37 @@ collect_user_inputs() {
     echo -e "${YELLOW}Please provide the following information for automated installation:${NC}"
     echo
 
-    # Get hostname
-    while true; do
-        printf "Enter hostname: "
-        read -r HOSTNAME
-        if [[ -n "${HOSTNAME}" ]] && [[ "${HOSTNAME}" =~ ^[a-zA-Z0-9-]+$ ]]; then
-            break
-        else
-            warning "Invalid hostname. Use only letters, numbers, and hyphens."
-            printf "\\n" # Add newline after warning if it's printed
-        fi
-    done
+    # Get hostname (skip if already set in env-private.sh)
+    if [[ -n "${HOSTNAME:-}" ]]; then
+        log "Using pre-configured hostname: ${HOSTNAME}"
+    else
+        while true; do
+            printf "Enter hostname: "
+            read -r HOSTNAME
+            if [[ -n "${HOSTNAME}" ]] && [[ "${HOSTNAME}" =~ ^[a-zA-Z0-9-]+$ ]]; then
+                break
+            else
+                warning "Invalid hostname. Use only letters, numbers, and hyphens."
+                printf "\\n" # Add newline after warning if it's printed
+            fi
+        done
+    fi
     
-    # Get username
-    while true; do
-        printf "Enter username for new user: "
-        read -r NEW_USER
-        if [[ -n "${NEW_USER}" ]] && [[ "${NEW_USER}" =~ ^[a-z_][a-z0-9_-]*$ ]]; then
-            break
-        else
-            warning "Invalid username. Use only lowercase letters, numbers, underscores, and hyphens. Must start with letter or underscore."
-            printf "\\n" # Add newline after warning if it's printed
-        fi
-    done
+    # Get username (skip if already set in env-private.sh)
+    if [[ -n "${NEW_USER:-}" ]]; then
+        log "Using pre-configured username: ${NEW_USER}"
+    else
+        while true; do
+            printf "Enter username for new user: "
+            read -r NEW_USER
+            if [[ -n "${NEW_USER}" ]] && [[ "${NEW_USER}" =~ ^[a-z_][a-z0-9_-]*$ ]]; then
+                break
+            else
+                warning "Invalid username. Use only lowercase letters, numbers, underscores, and hyphens. Must start with letter or underscore."
+                printf "\\n" # Add newline after warning if it's printed
+            fi
+        done
+    fi
     
     # Get user password
     while true; do
@@ -222,8 +236,134 @@ collect_user_inputs() {
         esac
     done
     
+    # Select secondary language (skip if already set in env-private.sh)
+    if [[ -n "${SECONDARY_LANGUAGE:-}" ]]; then
+        log "Using pre-configured secondary language: ${SECONDARY_LANGUAGE}"
+    else
+        select_secondary_language
+    fi
+    
+    # Ask about using public dotfiles (skip if already set in env-private.sh)
+    if [[ -n "${USE_PUBLIC_DOTFILES:-}" ]]; then
+        log "Using pre-configured dotfiles setting: USE_PUBLIC_DOTFILES=${USE_PUBLIC_DOTFILES}"
+    else
+        echo
+        echo -e "${YELLOW}Dotfiles Configuration${NC}"
+        echo "Do you want to use the default public dotfiles repository?"
+        echo "This will provide pre-configured dotfiles for common applications."
+        echo
+        read -rp "Use public dotfiles? (y/n): " use_dotfiles_input
+        echo
+        
+        if [[ "$use_dotfiles_input" == "y" ]]; then
+            USE_PUBLIC_DOTFILES="true"
+            log "Will use public dotfiles from: ${PUBLIC_DOTFILES_REPO}"
+        else
+            USE_PUBLIC_DOTFILES="false"
+            log "Will not use public dotfiles - keeping current dotfiles configuration"
+        fi
+    fi
+    
+    # Setup public dotfiles if requested
+    setup_public_dotfiles
+    
     echo
     log "Configuration completed. Starting automated installation..."
     echo
     sleep 2
+}
+
+# Select secondary language using dialog (ncurses interface)
+# Sets SECONDARY_LANGUAGE variable (empty for English only)
+# Dynamically reads available locales from /etc/locale.gen
+select_secondary_language() {
+    echo
+    echo -e "${YELLOW}Secondary Language Selection${NC}"
+    echo "You can optionally enable a secondary language locale besides English."
+    echo
+    
+    # Source locale.gen file - use /mnt/etc/locale.gen if available (during install), else /etc/locale.gen
+    local locale_gen_file="/etc/locale.gen"
+    if [[ -f "/mnt/etc/locale.gen" ]]; then
+        locale_gen_file="/mnt/etc/locale.gen"
+    fi
+    
+    # Build array of available UTF-8 locales from locale.gen
+    # Format for dialog: "tag" "description" pairs
+    local dialog_items=()
+    dialog_items+=("" "None (English only)")
+    
+    # Extract UTF-8 locales, excluding en_US which is always enabled
+    # Pattern: match lines starting with # that have UTF-8 as the charset (second column)
+    while IFS= read -r line; do
+        # Extract locale code (first column after removing #)
+        local locale_code
+        locale_code=$(echo "$line" | sed 's/^#//' | awk '{print $1}')
+        
+        # Skip en_US locales as English is always enabled
+        if [[ "$locale_code" == en_US* ]]; then
+            continue
+        fi
+        
+        # Add to dialog items (locale code as both tag and description for simplicity)
+        dialog_items+=("$locale_code" "$locale_code")
+    done < <(grep "^#.* UTF-8" "$locale_gen_file" | grep -v "@" | sort)
+    
+    # Use dialog for ncurses menu selection
+    # Default selection is empty (None/English only)
+    local result
+    result=$(dialog --clear --title "Secondary Language Selection" \
+        --default-item "" \
+        --menu "Select a secondary language to enable besides English (US).\nPress Enter to select, or choose 'None' for English only.\n\nUse arrow keys to navigate, type to search." \
+        22 70 14 \
+        "${dialog_items[@]}" \
+        2>&1 >/dev/tty)
+    
+    local dialog_exit_code=$?
+    
+    # Clear the dialog screen
+    clear
+    
+    # Handle dialog exit (cancel or ESC pressed)
+    if [[ $dialog_exit_code -ne 0 ]]; then
+        log "No secondary language selected (dialog cancelled)"
+        SECONDARY_LANGUAGE=""
+        return
+    fi
+    
+    # Set the selected language
+    SECONDARY_LANGUAGE="${result}"
+    
+    if [[ -n "${SECONDARY_LANGUAGE}" ]]; then
+        log "Selected secondary language: ${SECONDARY_LANGUAGE}"
+    else
+        log "No secondary language selected - English only"
+    fi
+}
+
+# Setup public dotfiles by cloning repository
+# This function clears the config/dotfiles directory and clones the public repository
+setup_public_dotfiles() {
+    if [[ "${USE_PUBLIC_DOTFILES}" != "true" ]]; then
+        log "Skipping public dotfiles setup (USE_PUBLIC_DOTFILES is not true)"
+        return 0
+    fi
+    
+    local dotfiles_dir="${INPUTS_SCRIPT_DIR}/../config/dotfiles"
+    
+    log "Setting up public dotfiles from ${PUBLIC_DOTFILES_REPO}"
+    
+    # Remove all files from config/dotfiles directory (including .gitignore)
+    if [[ -d "${dotfiles_dir}" ]]; then
+        log "Cleaning existing dotfiles directory: ${dotfiles_dir}"
+        rm -rf "${dotfiles_dir}"
+    fi
+    
+    # Clone the public dotfiles repository into config/dotfiles
+    log "Cloning public dotfiles repository..."
+    if git clone "${PUBLIC_DOTFILES_REPO}" "${dotfiles_dir}"; then
+        log "Successfully cloned public dotfiles to ${dotfiles_dir}"
+    else
+        fatal_error "Failed to clone public dotfiles repository"
+    fi
 }

@@ -1,0 +1,2 @@
+# Private environment variables (contains user-specific settings)
+settings/env-private.sh

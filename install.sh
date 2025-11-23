@@ -30,12 +30,13 @@ main() {
     echo
     sleep 1
     
-    # Collect all user inputs first
-    collect_user_inputs
-    
     # Execute tasks with visual progress
     if ! execute_task "check_prerequisites" "task_check_prerequisites"; then
         handle_task_failure "Prerequisites check failed. Exiting."
+    fi
+    
+    if ! execute_task "collect_user_inputs" "task_collect_user_inputs"; then
+        handle_task_failure "User input collection failed. Exiting."
     fi
     
     # These tasks must run sequentially

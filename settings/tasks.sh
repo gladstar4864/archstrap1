@@ -11,6 +11,11 @@ task_check_prerequisites() {
     check_prerequisites
 }
 
+task_collect_user_inputs() {
+    source "${TASKS_SCRIPT_DIR}/../utils/inputs.sh"
+    collect_user_inputs
+}
+
 task_update_system_clock() {
     source "${TASKS_SCRIPT_DIR}/../config/system/ntp.sh"
     update_iso_system_clock

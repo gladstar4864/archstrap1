@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+# Private environment variables for archstrap installation
+# Copy this file to env-private.sh and customize as needed
+# env-private.sh is ignored by git to keep your settings private
+
+# Hostname for the new system (optional)
+# If set, you won't be prompted for hostname during installation
+#HOSTNAME="myarch"
+
+# Username for the new non-root user (optional)
+# If set, you won't be prompted for username during installation
+#NEW_USER="myuser"
+
+# Secondary language locale (optional)
+# If set, you won't be prompted for language selection during installation
+# Use locale codes from /etc/locale.gen, e.g., "de_DE.UTF-8", etc.
+# Leave empty or unset for English only
+#SECONDARY_LANGUAGE="de_DE.UTF-8 UTF-8"
+
+# Use public dotfiles repository (optional)
+# If set to true, the default public dotfiles will be used automatically
+# If set to false or unset, you'll be prompted during installation
+#USE_PUBLIC_DOTFILES=true

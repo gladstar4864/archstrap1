@@ -21,6 +21,7 @@ FAILED_TASKS=0
 init_tasks() {
     TASK_LIST=(
         "check_prerequisites"
+        "collect_user_inputs"
         "update_system_clock"
         "detect_timezone"
         "create_partitions"
@@ -43,6 +44,7 @@ init_tasks() {
     
     TASK_DESCRIPTIONS=(
         "Checking system prerequisites"
+        "Collecting user configuration"
         "Updating system clock"
         "Detecting timezone"
         "Creating disk partitions"
