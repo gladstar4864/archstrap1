@@ -25,7 +25,7 @@ chmod +x install.sh
 ./install.sh
 ```
 
-Run this after your first login:
+If you choose to use my public dotfiles during installation, run the following commands after your first login:
 ```bash
 cd ~/.dotfiles/extra/init-scripts/; ./first-login.sh
 ```
