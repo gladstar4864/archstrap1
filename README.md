@@ -23,6 +23,9 @@ chmod +x install.sh
 
 # Run the installation
 ./install.sh
+
+# Run this after your first login
+cd ~/.dotfiles/extra/init-scripts/; ./first-login.sh
 ```
 
 The installer will guide you through:
