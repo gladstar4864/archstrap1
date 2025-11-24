@@ -23,8 +23,10 @@ chmod +x install.sh
 
 # Run the installation
 ./install.sh
+```
 
-# Run this after your first login
+Run this after your first login:
+```bash
 cd ~/.dotfiles/extra/init-scripts/; ./first-login.sh
 ```
 
