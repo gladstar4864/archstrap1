@@ -243,29 +243,44 @@ collect_user_inputs() {
         select_secondary_language
     fi
     
-    # Ask about using public dotfiles (skip if already set in env-private.sh)
-    if [[ -n "${USE_PUBLIC_DOTFILES:-}" ]]; then
-        log "Using pre-configured dotfiles setting: USE_PUBLIC_DOTFILES=${USE_PUBLIC_DOTFILES}"
-    else
-        echo
-        echo -e "${YELLOW}Dotfiles Configuration${NC}"
-        echo "Do you want to use the default public dotfiles repository?"
-        echo "This will provide pre-configured dotfiles for common applications."
-        echo
-        read -rp "Use public dotfiles? (y/n): " use_dotfiles_input
+    # Dotfiles repository selection
+    echo
+    echo -e "${YELLOW}Dotfiles Configuration${NC}"
+    
+    # Check if private dotfiles repository is configured
+    if [[ -n "${PRIVATE_DOTFILES_REPO:-}" ]]; then
+        echo "Choose which dotfiles repository to use:"
+        echo "  1) Public repository: ${PUBLIC_DOTFILES_REPO}"
+        echo "  2) Private repository: ${PRIVATE_DOTFILES_REPO}"
         echo
         
-        if [[ "$use_dotfiles_input" == "y" ]]; then
-            USE_PUBLIC_DOTFILES="true"
-            log "Will use public dotfiles from: ${PUBLIC_DOTFILES_REPO}"
-        else
-            USE_PUBLIC_DOTFILES="false"
-            log "Will not use public dotfiles - keeping current dotfiles configuration"
-        fi
+        while true; do
+            read -rp "Enter your choice (1-2): " dotfiles_choice
+            echo
+            case "$dotfiles_choice" in
+                1)
+                    SELECTED_DOTFILES_REPO="${PUBLIC_DOTFILES_REPO}"
+                    log "Will use public dotfiles from: ${SELECTED_DOTFILES_REPO}"
+                    break
+                    ;;
+                2)
+                    SELECTED_DOTFILES_REPO="${PRIVATE_DOTFILES_REPO}"
+                    log "Will use private dotfiles from: ${SELECTED_DOTFILES_REPO}"
+                    break
+                    ;;
+                *)
+                    warning "Invalid choice. Please enter 1 or 2"
+                    ;;
+            esac
+        done
+    else
+        # Only public repository available
+        SELECTED_DOTFILES_REPO="${PUBLIC_DOTFILES_REPO}"
+        log "Using public dotfiles from: ${SELECTED_DOTFILES_REPO}"
     fi
     
-    # Setup public dotfiles if requested
-    setup_public_dotfiles
+    # Setup dotfiles
+    setup_dotfiles
     
     echo
     log "Configuration completed. Starting automated installation..."
@@ -341,17 +356,17 @@ select_secondary_language() {
     fi
 }
 
-# Setup public dotfiles by cloning repository
-# This function clears the config/dotfiles directory and clones the public repository
-setup_public_dotfiles() {
-    if [[ "${USE_PUBLIC_DOTFILES}" != "true" ]]; then
-        log "Skipping public dotfiles setup (USE_PUBLIC_DOTFILES is not true)"
+# Setup dotfiles by cloning selected repository
+# This function clears the config/dotfiles directory and clones the selected repository
+setup_dotfiles() {
+    if [[ -z "${SELECTED_DOTFILES_REPO:-}" ]]; then
+        log "No dotfiles repository selected, skipping dotfiles setup"
         return 0
     fi
     
     local dotfiles_dir="${INPUTS_SCRIPT_DIR}/../config/dotfiles"
     
-    log "Setting up public dotfiles from ${PUBLIC_DOTFILES_REPO}"
+    log "Setting up dotfiles from ${SELECTED_DOTFILES_REPO}"
     
     # Remove all files from config/dotfiles directory (including .gitignore)
     if [[ -d "${dotfiles_dir}" ]]; then
@@ -359,11 +374,11 @@ setup_public_dotfiles() {
         rm -rf "${dotfiles_dir}"
     fi
     
-    # Clone the public dotfiles repository into config/dotfiles
-    log "Cloning public dotfiles repository..."
-    if git clone "${PUBLIC_DOTFILES_REPO}" "${dotfiles_dir}"; then
-        log "Successfully cloned public dotfiles to ${dotfiles_dir}"
+    # Clone the selected dotfiles repository into config/dotfiles
+    log "Cloning dotfiles repository..."
+    if git clone "${SELECTED_DOTFILES_REPO}" "${dotfiles_dir}"; then
+        log "Successfully cloned dotfiles to ${dotfiles_dir}"
     else
-        fatal_error "Failed to clone public dotfiles repository"
+        fatal_error "Failed to clone dotfiles repository: ${SELECTED_DOTFILES_REPO}"
     fi
 }

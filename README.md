@@ -103,7 +103,7 @@ The installation follows these phases:
 
 ## Dotfiles Integration
 
-**Important**: If you have a dotfiles repository, place it in the [`config/dotfiles/`](config/dotfiles/) directory before running the installation. The system looks for an initialization script at:
+**Private Repository Support**: Configure `PRIVATE_DOTFILES_REPO` in [`settings/env-private.sh`](settings/env-private.sh) to use your personal dotfiles repository. During installation, you'll choose between your private repo and the default public repository. The system looks for an initialization script at:
 
 ```
 config/dotfiles/extra/init-scripts/init-user.sh
@@ -112,6 +112,7 @@ config/dotfiles/extra/init-scripts/init-user.sh
 This script will be automatically executed during post-installation with the following parameters:
 - `$1` - Mount point (`/mnt`)
 - `$2` - Username
+- `$3` - Secondary language (if any)
 
 Example dotfiles structure:
 ```

@@ -15,7 +15,6 @@ export LUKS_PASSWORD=""
 export SECONDARY_LANGUAGE=""
 
 # Dotfiles configuration
-export USE_PUBLIC_DOTFILES=""
 export PUBLIC_DOTFILES_REPO="https://github.com/ih8d8/public-dotfiles.git"
 
 # Installation state tracking
