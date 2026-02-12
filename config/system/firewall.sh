@@ -35,9 +35,6 @@ configure_firewall() {
     # Install UFW-Docker rules
     arch-chroot /mnt ufw-docker install
     
-    # Set UFW-Docker to deny all by default
-    arch-chroot /mnt ufw-docker reset
-    
     # Enable UFW logging (optional - can be set to 'off', 'low', 'medium', 'high', 'full')
     arch-chroot /mnt ufw logging on
     

@@ -14,7 +14,7 @@ install_nvidia_drivers() {
 
     log "Installing NVIDIA drivers..."
     if arch-chroot /mnt lspci -k | grep -A 2 -E "(VGA|3D)" | grep -iq nvidia; then
-        arch-chroot /mnt sudo -u "${NEW_USER}" yay -S --needed --noconfirm --answerdiff=None --answerclean=None --removemake nvidia nvidia-lts nvidia-settings nvidia-prime libva-nvidia-driver-git cuda cudnn cuda-tools || fatal_error "something went wrong while installing nvidia drivers!"
+        arch-chroot /mnt sudo -u "${NEW_USER}" yay -S --needed --noconfirm --answerdiff=None --answerclean=None --removemake nvidia-open nvidia-open-lts nvidia-settings nvidia-prime libva-nvidia-driver-git cuda cudnn cuda-tools || fatal_error "something went wrong while installing nvidia drivers!"
     else
         log "NVIDIA GPU not detected, skipping NVIDIA driver installation."
     fi

@@ -236,6 +236,7 @@ official,btrfs-progs
 official,snapper
 official,snap-pac
 official,yazi
+official,nvtop
 official,pyenv
 official,python-pip
 official,python-pipenv
@@ -257,7 +258,6 @@ official,ttf-jetbrains-mono-nerd
 official,powerline-fonts
 official,ttf-cascadia-code-nerd
 aur,borna-fonts
-aur,cmusfm
 aur,brave-bin
 aur,mullvad-browser-bin
 aur,nvm
