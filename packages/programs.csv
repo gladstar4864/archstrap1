@@ -192,7 +192,6 @@ official,qt6ct
 official,qt5-quickcontrols2
 official,qt5-graphicaleffects
 official,qt5-svg
-official,swappy
 official,xfce4-settings
 official,rclone
 official,restic
@@ -237,6 +236,9 @@ official,snapper
 official,snap-pac
 official,yazi
 official,nvtop
+official,gemini-cli
+official,satty
+official,hyprpicker
 official,pyenv
 official,python-pip
 official,python-pipenv
@@ -280,7 +282,6 @@ aur,ueberzugpp
 aur,dotool
 aur,graftcp
 aur,claude-code
-aur,gemini-cli
 aur,mullvad-vpn-bin
 aur,ufw-docker
 aur,refind-btrfs-snapshots-bin
