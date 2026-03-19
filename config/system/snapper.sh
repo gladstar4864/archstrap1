@@ -60,9 +60,12 @@ configure_root_snapshots() {
         # Update the snapper config file with custom timeline settings
         config_file='/etc/snapper/configs/root'
         
+        # Update number limit
+        sed -i 's/^NUMBER_LIMIT=.*/NUMBER_LIMIT=\"10\"/' \"\$config_file\"
+
         # Update timeline settings
         sed -i 's/^TIMELINE_MIN_AGE=.*/TIMELINE_MIN_AGE=\"1800\"/' \"\$config_file\"
-        sed -i 's/^TIMELINE_LIMIT_HOURLY=.*/TIMELINE_LIMIT_HOURLY=\"5\"/' \"\$config_file\"
+        sed -i 's/^TIMELINE_LIMIT_HOURLY=.*/TIMELINE_LIMIT_HOURLY=\"3\"/' \"\$config_file\"
         sed -i 's/^TIMELINE_LIMIT_DAILY=.*/TIMELINE_LIMIT_DAILY=\"7\"/' \"\$config_file\"
         sed -i 's/^TIMELINE_LIMIT_WEEKLY=.*/TIMELINE_LIMIT_WEEKLY=\"0\"/' \"\$config_file\"
         sed -i 's/^TIMELINE_LIMIT_MONTHLY=.*/TIMELINE_LIMIT_MONTHLY=\"0\"/' \"\$config_file\"
@@ -70,7 +73,7 @@ configure_root_snapshots() {
         
         # Verify the configuration was updated
         echo 'Updated snapper configuration:'
-        grep -E '^TIMELINE_(MIN_AGE|LIMIT_)' \"\$config_file\" || true
+        grep -E '^(NUMBER_LIMIT|TIMELINE_(MIN_AGE|LIMIT_))' \"\$config_file\" || true
     "
     
     if [[ $? -ne 0 ]]; then
@@ -78,7 +81,7 @@ configure_root_snapshots() {
     fi
         
     log "Snapper root configuration created and configured successfully"
-    log "Timeline settings: 5 hourly, 7 daily, no weekly/monthly/yearly snapshots"
+    log "Timeline settings: 3 hourly, 7 daily, no weekly/monthly/yearly snapshots (10 total)"
 }
 
 
