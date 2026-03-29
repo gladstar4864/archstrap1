@@ -22,6 +22,14 @@ sudo sed -i -e 's|# blocked_names_file|blocked_names_file|' \
     { server_name='\''*'\'' , via=['\''*'\'' ] },\
 ]\
 ' \
+       -e 's|^# log_file = '\''/var/log/dnscrypt-proxy/blocked-names.log'\''|log_file = '\''/var/log/dnscrypt-proxy/blocked-names.log'\''|' \
+       -e 's|^# file = '\''/var/log/dnscrypt-proxy/query.log'\''|file = '\''/var/log/dnscrypt-proxy/query.log'\''|' \
+       -e 's|^# log_file = '\''/var/log/dnscrypt-proxy/blocked-ips.log'\''|log_file = '\''/var/log/dnscrypt-proxy/blocked-ips.log'\''|' \
+       -e '/\[monitoring_ui\]/,/^\[/{s|^enabled = false|enabled = true|}' \
+       -e '/\[monitoring_ui\]/,/^\[/{s|^listen_address = "127.0.0.1:8080"|listen_address = "127.0.0.1:5380"|}' \
+       -e '/\[monitoring_ui\]/,/^\[/{s|^username = "admin"|username = ""|}' \
+       -e '/\[monitoring_ui\]/,/^\[/{s|^password = "changeme"|password = ""|}' \
+       -e '/\[monitoring_ui\]/,/^\[/{s|^privacy_level = 1|privacy_level = 0|}' \
        /etc/dnscrypt-proxy/dnscrypt-proxy.toml
 
 echo "dnscrypt-proxy configuration completed!"
