@@ -156,7 +156,7 @@ official,qemu-desktop
 official,libvirt
 official,edk2-ovmf
 official,dnsmasq
-official,iptables-nft
+official,iptables
 official,ufw
 official,qemu-guest-agent
 official,spice-vdagent
