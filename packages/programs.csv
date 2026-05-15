@@ -239,6 +239,7 @@ official,nvtop
 official,gemini-cli
 official,satty
 official,hyprpicker
+official,openai-codex
 official,pyenv
 official,python-pip
 official,python-pipenv
