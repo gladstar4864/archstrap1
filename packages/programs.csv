@@ -20,7 +20,7 @@ official,os-prober
 official,efibootmgr
 official,network-manager-applet
 official,nm-connection-editor
-official,alacritty
+official,kitty
 official,python
 official,nano
 official,tcpdump
