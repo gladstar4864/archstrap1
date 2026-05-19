@@ -36,14 +36,18 @@ unmount_btrfs_filesystems() {
         # When using LVM with separate home volume
         safe_umount "/mnt/home/.snapshots" "home snapshots subvolume"
         safe_umount "/mnt/home" "home subvolume"
+        safe_umount "/mnt/var/tmp" "var tmp subvolume"
+        safe_umount "/mnt/var/cache" "var cache subvolume"
+        safe_umount "/mnt/var/log" "var log subvolume"
         safe_umount "/mnt/swap" "swap subvolume" 
         safe_umount "/mnt/tmp" "tmp subvolume"
-        safe_umount "/mnt/var" "var subvolume"
     else
         # When using direct LUKS device (all subvolumes on same device)
+        safe_umount "/mnt/var/tmp" "var tmp subvolume"
+        safe_umount "/mnt/var/cache" "var cache subvolume"
+        safe_umount "/mnt/var/log" "var log subvolume"
         safe_umount "/mnt/swap" "swap subvolume"
         safe_umount "/mnt/tmp" "tmp subvolume"
-        safe_umount "/mnt/var" "var subvolume"
         safe_umount "/mnt/home" "home subvolume"
     fi
     

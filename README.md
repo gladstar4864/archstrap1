@@ -55,7 +55,7 @@ The installer will guide you through:
 ### 💾 Flexible Filesystem Options
 - **ext4** - Traditional, stable filesystem with LVM
 - **btrfs** - Advanced filesystem with snapshots and compression
-  - Automatic subvolume creation (@, @var, @tmp, @swap, @home)
+  - Automatic subvolume creation (@, @tmp, @swap, @home, @var_log, @var_cache, @var_tmp)
   - Integration with Snapper for automated snapshots
 - **rEFInd bootloader** - Modern UEFI boot manager with multiple kernel options
 - **refind-btrfs-snapshots** - Adds BTRFS snapshots to rEFInd boot menu (when using btrfs)
@@ -142,10 +142,13 @@ The `init-user.sh` script should handle:
 - Can be used with or without LVM
 - Automatic subvolume creation:
   - `@` - Root filesystem
-  - `@var` - Variable data
   - `@tmp` - Temporary files
   - `@swap` - Swap area
   - `@home` - User home directories
+  - `@var_log` - Logs excluded from root snapshots
+  - `@var_cache` - Cache data excluded from root snapshots
+  - `@var_tmp` - Variable temporary data excluded from root snapshots
+- `/var` remains inside `@`, so `/var/lib/pacman` is included in root snapshots.
 - Built-in snapshot support with Snapper integration
 
 ## Customization

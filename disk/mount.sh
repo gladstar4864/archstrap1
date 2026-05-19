@@ -39,13 +39,16 @@ mount_formatted_filesystems() {
             # Mount btrfs subvolumes from LVM
             mount -o "${mount_options},subvol=@" /dev/vg1/root /mnt
             
-            # Create mount points (excluding .snapshots - snapper will handle it)
+            # Create mount points. /var stays inside @ so pacman's database is snapshotted.
             mkdir -p /mnt/{home,var,tmp,swap}
+            mkdir -p /mnt/var/{log,cache,tmp}
             
-            # Mount other subvolumes (excluding @snapshots - snapper will handle it)
-            mount -o "${mount_options},subvol=@var" /dev/vg1/root /mnt/var
+            # Mount other subvolumes (excluding @/.snapshots - snapper will handle it)
             mount -o "${mount_options},subvol=@tmp" /dev/vg1/root /mnt/tmp
             mount -o "${mount_options},subvol=@swap" /dev/vg1/root /mnt/swap
+            mount -o "${mount_options},subvol=@var_log" /dev/vg1/root /mnt/var/log
+            mount -o "${mount_options},subvol=@var_cache" /dev/vg1/root /mnt/var/cache
+            mount -o "${mount_options},subvol=@var_tmp" /dev/vg1/root /mnt/var/tmp
             
             # Mount @home subvolume from separate home LVM volume
             if [[ -b /dev/vg1/home ]]; then
@@ -59,14 +62,17 @@ mount_formatted_filesystems() {
             # Mount btrfs subvolumes directly from LUKS device
             mount -o "${mount_options},subvol=@" /dev/mapper/luks /mnt
             
-            # Create mount points
+            # Create mount points. /var stays inside @ so pacman's database is snapshotted.
             mkdir -p /mnt/{home,var,tmp,swap}
+            mkdir -p /mnt/var/{log,cache,tmp}
             
             # Mount other subvolumes from the same device
             mount -o "${mount_options},subvol=@home" /dev/mapper/luks /mnt/home
-            mount -o "${mount_options},subvol=@var" /dev/mapper/luks /mnt/var
             mount -o "${mount_options},subvol=@tmp" /dev/mapper/luks /mnt/tmp
             mount -o "${mount_options},subvol=@swap" /dev/mapper/luks /mnt/swap
+            mount -o "${mount_options},subvol=@var_log" /dev/mapper/luks /mnt/var/log
+            mount -o "${mount_options},subvol=@var_cache" /dev/mapper/luks /mnt/var/cache
+            mount -o "${mount_options},subvol=@var_tmp" /dev/mapper/luks /mnt/var/tmp
         fi
     else
         # Mount ext4 filesystems normally

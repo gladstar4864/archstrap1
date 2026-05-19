@@ -129,11 +129,13 @@ create_btrfs_subvolumes() {
     mkdir -p /mnt/btrfs-root
     mount "${btrfs_device}" /mnt/btrfs-root
     
-    # Create subvolumes on root volume (excluding @snapshots - snapper will create it)
+    # Create subvolumes on root volume (excluding @/.snapshots - snapper will create it)
     btrfs subvolume create /mnt/btrfs-root/@
-    btrfs subvolume create /mnt/btrfs-root/@var
     btrfs subvolume create /mnt/btrfs-root/@tmp
     btrfs subvolume create /mnt/btrfs-root/@swap
+    btrfs subvolume create /mnt/btrfs-root/@var_log
+    btrfs subvolume create /mnt/btrfs-root/@var_cache
+    btrfs subvolume create /mnt/btrfs-root/@var_tmp
     
     # Create subvolumes on home volume if it exists (only when using LVM)
     if [[ "${LVM_CREATED:-false}" == "true" && -b /dev/vg1/home ]]; then
@@ -163,4 +165,3 @@ create_btrfs_subvolumes() {
     
     log "btrfs subvolumes created successfully"
 }
-
