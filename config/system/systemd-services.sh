@@ -22,7 +22,14 @@ bluetooth.service cups.service tailscaled.service ufw.service"
     local filesystem="${FILESYSTEM_FORMAT:-ext4}"
     if [[ "${filesystem}" == "btrfs" ]]; then
         log "Enabling btrfs-specific services..."
-        arch-chroot /mnt systemctl enable "refind-btrfs-snapshots.path" || warning "Failed to enable refind-btrfs-snapshots.path"
+        case "${BOOTLOADER:-grub}" in
+            "grub")
+                arch-chroot /mnt systemctl enable "grub-btrfsd.service" 2>/dev/null || warning "Failed to enable grub-btrfs watcher"
+                ;;
+            "refind")
+                arch-chroot /mnt systemctl enable "refind-btrfs-snapshots.path" || warning "Failed to enable refind-btrfs-snapshots.path"
+                ;;
+        esac
     fi
     
     log "Required services enabled successfully"

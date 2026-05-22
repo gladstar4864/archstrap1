@@ -235,6 +235,40 @@ collect_user_inputs() {
                 ;;
         esac
     done
+
+    # Select bootloader (skip if already set in env-private.sh)
+    if [[ -n "${BOOTLOADER:-}" ]]; then
+        [[ "${BOOTLOADER}" == "grub" || "${BOOTLOADER}" == "refind" ]] ||
+            fatal_error "Unsupported bootloader: ${BOOTLOADER}. Use grub or refind."
+        log "Using pre-configured bootloader: ${BOOTLOADER}"
+    else
+        echo
+        echo -e "${YELLOW}Bootloader Selection${NC}"
+        echo "Choose the bootloader for your system:"
+        echo "  1) GRUB (default, recommended for Btrfs snapshots)"
+        echo "  2) rEFInd"
+        echo
+
+        while true; do
+            read -rp "Enter your choice (1-2, default 1): " bootloader_choice
+            echo
+            case "${bootloader_choice:-1}" in
+                1)
+                    BOOTLOADER="grub"
+                    log "Selected GRUB bootloader"
+                    break
+                    ;;
+                2)
+                    BOOTLOADER="refind"
+                    log "Selected rEFInd bootloader"
+                    break
+                    ;;
+                *)
+                    warning "Invalid choice. Please enter 1 for GRUB or 2 for rEFInd"
+                    ;;
+            esac
+        done
+    fi
     
     # Select secondary language (skip if already set in env-private.sh)
     if [[ -n "${SECONDARY_LANGUAGE:-}" ]]; then

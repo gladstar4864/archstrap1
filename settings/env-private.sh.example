@@ -18,6 +18,11 @@
 # Leave empty or unset for English only
 #SECONDARY_LANGUAGE="de_DE.UTF-8 UTF-8"
 
+# Bootloader selection (optional)
+# Supported values: grub, refind
+# Defaults to grub when unset.
+#BOOTLOADER="grub"
+
 # Private dotfiles repository URL (optional)
 # If set, you'll be asked to choose between your private repo and the public one
 # Leave commented out if you only want to use the public dotfiles repository

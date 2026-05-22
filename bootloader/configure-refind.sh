@@ -39,12 +39,14 @@ configure_refind() {
     fi
     
     local rw_loglevel_options="rw loglevel=3"
-    local initrd_options="initrd=intel-ucode.img initrd=initramfs-%v.img"
+    local ucode_img="${UCODE_PACKAGE:-intel-ucode}"
+    ucode_img="${ucode_img}.img"
+    local initrd_options="initrd=${ucode_img} initrd=initramfs-%v.img"
     
     # Create refind_linux.conf
     cat <<EOF >/mnt/boot/refind_linux.conf
 "Boot with standard options"     "${blk_options} ${rw_loglevel_options} ${initrd_options}"
-"Boot using fallback initramfs"  "${blk_options} ${rw_loglevel_options} initrd=intel-ucode.img initrd=initramfs-%v-fallback.img"
+"Boot using fallback initramfs"  "${blk_options} ${rw_loglevel_options} initrd=${ucode_img} initrd=initramfs-%v-fallback.img"
 "Boot to terminal"               "${blk_options} ${rw_loglevel_options} ${initrd_options} systemd.unit=multi-user.target"
 "Boot to single-user mode"       "${blk_options} ${rw_loglevel_options} ${initrd_options} single"
 "Boot with minimal options"      "${blk_options} ${initrd_options} ro"

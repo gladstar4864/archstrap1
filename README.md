@@ -4,7 +4,7 @@ A comprehensive, modular Arch Linux installation system that automates the setup
 
 ## Overview
 
-Archstrap provides a fully automated Arch Linux installation experience with LUKS encryption and comprehensive package management. The system supports both ext4 and btrfs filesystems with optional LVM, and uses the rEFInd bootloader for secure boot management.
+Archstrap provides a fully automated Arch Linux installation experience with LUKS encryption and comprehensive package management. The system supports both ext4 and btrfs filesystems with optional LVM, and lets you choose GRUB or rEFInd as the bootloader.
 
 ## Quick Start
 
@@ -57,8 +57,8 @@ The installer will guide you through:
 - **btrfs** - Advanced filesystem with snapshots and compression
   - Automatic subvolume creation (@, @tmp, @swap, @home, @var_log, @var_cache, @var_tmp)
   - Integration with Snapper for automated snapshots
-- **rEFInd bootloader** - Modern UEFI boot manager with multiple kernel options
-- **refind-btrfs-snapshots** - Adds BTRFS snapshots to rEFInd boot menu (when using btrfs)
+- **Bootloader choice** - GRUB by default, with rEFInd available as an option
+- **Snapshot boot integration** - `grub-btrfs` for GRUB or `refind-btrfs-snapshots` for rEFInd when using btrfs
 
 ### ⚙️ Automated Configuration
 - **System services** - Automated service configuration
@@ -86,7 +86,7 @@ The installation follows these phases:
 ### Phase 3: Base System
 - 📦 Base system installation with pacstrap
 - ⚙️ System configuration (locale, timezone, hostname)
-- 🥾 rEFInd bootloader installation and configuration
+- 🥾 GRUB or rEFInd bootloader installation and configuration
 - 👤 User account creation with sudo access
 
 ### Phase 4: Package Installation
@@ -150,6 +150,7 @@ The `init-user.sh` script should handle:
   - `@var_tmp` - Variable temporary data excluded from root snapshots
 - `/var` remains inside `@`, so `/var/lib/pacman` is included in root snapshots.
 - Built-in snapshot support with Snapper integration
+- GRUB installations include `grub-btrfs` so Snapper snapshots can appear in the boot menu.
 
 ## Customization
 

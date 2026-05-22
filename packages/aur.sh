@@ -12,7 +12,15 @@ install_aur_packages() {
     
     # Get AUR packages from CSV
     local AUR_PKGS
-    AUR_PKGS=$(awk -F',' '/^aur,/ {print $2}' ORS=' ' "${AUR_SCRIPT_DIR}/programs.csv")
+    AUR_PKGS=$(awk -F',' -v bootloader="${BOOTLOADER:-grub}" -v filesystem="${FILESYSTEM_FORMAT:-ext4}" '
+        /^aur,/ {
+            pkg = $2
+            if (pkg == "refind-btrfs-snapshots-bin" && (bootloader != "refind" || filesystem != "btrfs")) {
+                next
+            }
+            printf "%s ", pkg
+        }
+    ' "${AUR_SCRIPT_DIR}/programs.csv")
     
     # Create a script to run inside chroot
     cat > /mnt/install_aur_packages.sh << EOF

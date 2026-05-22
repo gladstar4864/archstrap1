@@ -1,23 +1,9 @@
-official,base
-official,base-devel
-official,linux
-official,linux-headers
-official,linux-lts
-official,linux-lts-headers
-official,linux-firmware
 official,mesa
 official,intel-media-driver
 official,vpl-gpu-rt
 official,libva-utils
-official,lvm2
-official,vim
 official,nvim
-official,git
 official,lazygit
-official,networkmanager
-official,refind
-official,os-prober
-official,efibootmgr
 official,network-manager-applet
 official,nm-connection-editor
 official,kitty
@@ -60,6 +46,7 @@ official,moreutils
 official,libnotify
 official,ffmpeg
 official,ntfs-3g
+official,dosfstools
 official,exfat-utils
 official,hunspell
 official,hunspell-en_us
@@ -71,7 +58,6 @@ official,poppler
 official,yt-dlp
 official,mediainfo
 official,nload
-official,intel-ucode
 official,expac
 official,dmidecode
 official,stunnel
@@ -165,7 +151,6 @@ official,rustup
 official,socat
 official,bc
 official,go
-official,reflector
 official,fwupd
 official,polkit-gnome
 official,spotify-launcher

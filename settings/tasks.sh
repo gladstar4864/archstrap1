@@ -59,7 +59,9 @@ task_install_base_system() {
     source "${TASKS_SCRIPT_DIR}/../bootloader/configure-refind.sh"
     source "${TASKS_SCRIPT_DIR}/../disk/fstab.sh"
     install_base_system
-    setup_pacman_hook
+    if [[ "${BOOTLOADER:-grub}" == "refind" ]]; then
+        setup_pacman_hook
+    fi
     generate_fstab
 }
 
@@ -69,8 +71,19 @@ task_configure_system() {
 }
 
 task_setup_bootloader() {
+    source "${TASKS_SCRIPT_DIR}/../bootloader/configure-grub.sh"
     source "${TASKS_SCRIPT_DIR}/../bootloader/configure-refind.sh"
-    configure_refind
+    case "${BOOTLOADER:-grub}" in
+        "grub")
+            configure_grub
+            ;;
+        "refind")
+            configure_refind
+            ;;
+        *)
+            fatal_error "Unsupported bootloader: ${BOOTLOADER}"
+            ;;
+    esac
 }
 
 task_create_user() {

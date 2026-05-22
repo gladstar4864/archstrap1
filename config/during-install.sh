@@ -17,6 +17,7 @@ source "${DURING_INSTALL_SCRIPT_DIR}/system/NetworkManager.sh"
 source "${DURING_INSTALL_SCRIPT_DIR}/system/pacman.sh"
 
 # Source bootloader modules
+source "${DURING_INSTALL_SCRIPT_DIR}/../bootloader/install-grub.sh"
 source "${DURING_INSTALL_SCRIPT_DIR}/../bootloader/install-refind.sh"
 
 # Automated system configuration (no user interaction) with proper error handling
@@ -52,9 +53,22 @@ configure_system_automated() {
         error "Failed to configure mkinitcpio"
     fi
     
-    if ! install_refind; then
-        error "Failed to install rEFInd bootloader"
-    fi
+    local bootloader="${BOOTLOADER:-grub}"
+    case "${bootloader}" in
+        "grub")
+            if ! install_grub; then
+                error "Failed to install GRUB bootloader"
+            fi
+            ;;
+        "refind")
+            if ! install_refind; then
+                error "Failed to install rEFInd bootloader"
+            fi
+            ;;
+        *)
+            error "Unsupported bootloader: ${bootloader}"
+            ;;
+    esac
     
     if ! enable_networkmanager; then
         error "Failed to enable NetworkManager"
