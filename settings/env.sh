@@ -14,7 +14,7 @@ export ROOT_PASSWORD=""
 export LUKS_PASSWORD=""
 export SECONDARY_LANGUAGE=""
 export BOOTLOADER=""
-export UCODE_PACKAGE=""
+export CPU_VENDOR=""
 
 # Dotfiles configuration
 export PUBLIC_DOTFILES_REPO="https://github.com/ih8d8/public-dotfiles.git"

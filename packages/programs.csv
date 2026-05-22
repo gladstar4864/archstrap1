@@ -1,6 +1,4 @@
 official,mesa
-official,intel-media-driver
-official,vpl-gpu-rt
 official,libva-utils
 official,nvim
 official,lazygit
@@ -47,7 +45,7 @@ official,libnotify
 official,ffmpeg
 official,ntfs-3g
 official,dosfstools
-official,exfat-utils
+official,exfatprogs
 official,hunspell
 official,hunspell-en_us
 official,speedcrunch
@@ -118,7 +116,6 @@ official,gvfs-mtp
 official,at
 official,inetutils
 official,xcursor-vanilla-dmz
-official,xf86-video-intel
 official,xorg-xrandr
 official,newsboat
 official,ffmpegthumbnailer
@@ -127,7 +124,7 @@ official,sof-firmware
 official,firejail
 official,lsof
 official,lshw
-official,mlocate
+official,plocate
 official,bluez
 official,bluez-utils
 official,mpv
@@ -155,7 +152,6 @@ official,fwupd
 official,polkit-gnome
 official,spotify-launcher
 official,wayvnc
-official,intel-gpu-tools
 official,gammastep
 official,obs-studio
 official,wl-clipboard
@@ -184,6 +180,9 @@ official,eog
 official,gtk3
 official,cliphist
 official,sddm
+official,qt6-svg
+official,qt6-virtualkeyboard
+official,qt6-multimedia
 official,waybar
 official,wireshark-qt
 official,zathura
@@ -213,7 +212,6 @@ official,traceroute
 official,clamav
 official,rofi
 official,rofi-rbw
-official,bandwhich
 official,eza
 official,openbsd-netcat
 official,btrfs-progs

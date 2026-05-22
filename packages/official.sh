@@ -19,6 +19,10 @@ install_official_packages() {
     
     local OFFICIAL_PKGS
     OFFICIAL_PKGS=$(awk -F',' '/^official,/ {print $2}' "${CSV_PATH}")
+
+    if [[ "${CPU_VENDOR}" == "intel" ]]; then
+        OFFICIAL_PKGS="${OFFICIAL_PKGS} intel-media-driver vpl-gpu-rt intel-gpu-tools"
+    fi
     
     if [[ -z "${OFFICIAL_PKGS}" ]]; then
         fatal_error "No official packages found in CSV file"

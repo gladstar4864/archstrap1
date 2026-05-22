@@ -39,7 +39,15 @@ configure_refind() {
     fi
     
     local rw_loglevel_options="rw loglevel=3"
-    local ucode_img="${UCODE_PACKAGE:-intel-ucode}"
+    local cpu_vendor="${CPU_VENDOR:-intel}"
+    local ucode_img
+
+    if [[ "${cpu_vendor}" == "amd" ]]; then
+        ucode_img="amd-ucode"
+    else
+        ucode_img="intel-ucode"
+    fi
+
     ucode_img="${ucode_img}.img"
     local initrd_options="initrd=${ucode_img} initrd=initramfs-%v.img"
     

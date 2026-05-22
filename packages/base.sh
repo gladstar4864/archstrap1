@@ -12,7 +12,6 @@ install_base_system() {
 
     local bootloader="${BOOTLOADER:-grub}"
     local bootloader_packages
-    local cpu_vendor
     local ucode_pkg
 
     case "${bootloader}" in
@@ -27,15 +26,24 @@ install_base_system() {
             ;;
     esac
 
-    cpu_vendor="$(awk -F': ' '/vendor_id/ {print $2; exit}' /proc/cpuinfo)"
-    if [[ "${cpu_vendor}" == "AuthenticAMD" ]]; then
-        ucode_pkg="amd-ucode"
-    else
-        ucode_pkg="intel-ucode"
-    fi
+    case "$(awk -F': ' '/vendor_id/ {print $2; exit}' /proc/cpuinfo)" in
+        "AuthenticAMD")
+            CPU_VENDOR="amd"
+            ucode_pkg="amd-ucode"
+            ;;
+        "GenuineIntel")
+            CPU_VENDOR="intel"
+            ucode_pkg="intel-ucode"
+            ;;
+        *)
+            CPU_VENDOR="intel"
+            ucode_pkg="intel-ucode"
+            warning "Unknown CPU vendor; defaulting to Intel microcode"
+            ;;
+    esac
 
-    export UCODE_PACKAGE="${ucode_pkg}"
-    
+    export CPU_VENDOR
+
     pacstrap -K /mnt base base-devel linux linux-headers linux-lts linux-lts-headers \
              linux-firmware lvm2 vim git networkmanager ${bootloader_packages} \
              iwd "${ucode_pkg}" curl reflector --noconfirm --ask=4
