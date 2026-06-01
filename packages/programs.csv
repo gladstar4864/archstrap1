@@ -223,6 +223,7 @@ official,gemini-cli
 official,satty
 official,hyprpicker
 official,openai-codex
+official,opencode
 official,pyenv
 official,python-pip
 official,python-pipenv
