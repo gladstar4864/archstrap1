@@ -224,6 +224,7 @@ official,satty
 official,hyprpicker
 official,openai-codex
 official,opencode
+official,syncthing
 official,pyenv
 official,python-pip
 official,python-pipenv
