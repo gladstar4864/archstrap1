@@ -226,6 +226,7 @@ official,openai-codex
 official,opencode
 official,syncthing
 official,pyenv
+official,uv
 official,python-pip
 official,python-pipenv
 official,python-pipx
