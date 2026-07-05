@@ -225,6 +225,7 @@ official,hyprpicker
 official,openai-codex
 official,opencode
 official,syncthing
+official,git-filter-repo
 official,pyenv
 official,uv
 official,python-pip
